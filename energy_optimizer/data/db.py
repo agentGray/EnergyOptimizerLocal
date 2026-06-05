@@ -16,9 +16,11 @@ try:
 except ImportError:
     DB_ENGINE = "sqlite"
 
+import tempfile
+
 DB_FILE = os.environ.get(
     "ENERGY_DB_PATH",
-    "/tmp/energy_optimizer.duckdb" if DB_ENGINE == "duckdb" else "/tmp/energy_optimizer.db",
+    os.path.join(tempfile.gettempdir(), "energy_optimizer.duckdb" if DB_ENGINE == "duckdb" else "energy_optimizer.db"),
 )
 
 
