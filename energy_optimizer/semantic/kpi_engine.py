@@ -190,8 +190,12 @@ def get_load_dispatch_recommendations() -> list[dict]:
     peak_hours_data = query("SELECT * FROM energy_hourly ORDER BY kw_base DESC LIMIT 4")
     peak_hours = [row["hour"] for row in peak_hours_data]
 
-    # Find shiftable assets (stored as 1/0 in SQLite, true/false in DuckDB)
-    shiftable = query("SELECT * FROM energy_assets WHERE shiftable = 1 OR shiftable = 'true'")
+    # Find shiftable assets
+    from ..data.db import DB_ENGINE
+    if DB_ENGINE == "duckdb":
+        shiftable = query("SELECT * FROM energy_assets WHERE shiftable = true")
+    else:
+        shiftable = query("SELECT * FROM energy_assets WHERE shiftable = 1")
 
     recommendations = []
     for i, asset in enumerate(shiftable):
