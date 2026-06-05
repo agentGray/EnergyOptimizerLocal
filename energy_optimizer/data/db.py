@@ -40,10 +40,12 @@ def query(sql: str, params: list = None) -> list[dict]:
     try:
         if DB_ENGINE == "duckdb":
             if params:
-                result = con.execute(sql, params).fetchdf()
+                result = con.execute(sql, params)
             else:
-                result = con.execute(sql).fetchdf()
-            return result.to_dict(orient="records")
+                result = con.execute(sql)
+            columns = [desc[0] for desc in result.description]
+            rows = result.fetchall()
+            return [dict(zip(columns, row)) for row in rows]
         else:
             cursor = con.cursor()
             if params:
