@@ -15,12 +15,11 @@ class Metadata(BaseModel):
     domain: str = "Energy & ESG"
     version: str = "1.0.0"
     timestamp: str = ""
-    plant_key: str = ""
+    plant_key: str = "us"
 
-    def __init__(self, **data):
-        super().__init__(**data)
+    def model_post_init(self, __context) -> None:
         if not self.timestamp:
-            self.timestamp = datetime.utcnow().isoformat() + "Z"
+            object.__setattr__(self, "timestamp", datetime.utcnow().isoformat() + "Z")
 
 
 class Lineage(BaseModel):
@@ -29,10 +28,9 @@ class Lineage(BaseModel):
     refresh_cadence: str = "real-time"
     last_refresh: str = ""
 
-    def __init__(self, **data):
-        super().__init__(**data)
+    def model_post_init(self, __context) -> None:
         if not self.last_refresh:
-            self.last_refresh = datetime.utcnow().isoformat() + "Z"
+            object.__setattr__(self, "last_refresh", datetime.utcnow().isoformat() + "Z")
 
 
 class Confidence(BaseModel):
